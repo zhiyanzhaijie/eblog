@@ -1,0 +1,1 @@
+export const CHANG_ISCOLLAPSE = 'CHANG_ISCOLLAPSE'
