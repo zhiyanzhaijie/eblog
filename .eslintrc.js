@@ -16,5 +16,6 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'vue/multi-word-component-names': 'off',
     'vue/html-closing-bracket-newline': 'off',
+    'prettier/prettier': 'off',
   },
 }
