@@ -1,7 +1,11 @@
 import router from '@/router'
 import store from '@/store'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 const whiteForm = ['/login', '/404']
 router.beforeEach(async (to, from, next) => {
+  NProgress.start()
   if (whiteForm.includes(to.path)) {
     next()
   } else {
@@ -29,4 +33,8 @@ router.beforeEach(async (to, from, next) => {
       await store.dispatch('USER_LOGOUT')
     }
   }
+  NProgress.done()
+})
+router.afterEach(() => {
+  NProgress.done()
 })

@@ -2,12 +2,17 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import LayoutBasic from '@/layouts/LayoutBasic' // 基本布局无需懒加载
 
-const routerView = {
-  render: (h) => h('router-view'),
+// 路由跳转报错解决
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch((err) => err)
 }
 
 Vue.use(VueRouter)
 
+const routerView = {
+  render: (h) => h('router-view'),
+}
 const routes = [
   {
     path: '/login',
@@ -80,7 +85,7 @@ const routes = [
             component: () => import('@/views/sys/articles'),
           },
           {
-            path: '/articlts/edit',
+            path: '/articles/edit',
             name: 'ArticlesEdit',
             meta: {
               menu: '编辑文章',
@@ -101,6 +106,7 @@ const routes = [
       {
         path: '/roles',
         name: 'Roles',
+        hidden: true,
         meta: {
           menu: '用户',
           icon: 'el-icon-s-custom',
@@ -119,7 +125,6 @@ const routes = [
     ],
   },
 ]
-
 const router = new VueRouter({
   routes,
 })

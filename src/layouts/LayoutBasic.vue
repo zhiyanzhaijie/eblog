@@ -8,7 +8,8 @@
         <layout-header />
       </el-header>
       <el-main>
-        <router-view></router-view>
+        <bread-crumb class="bread-crumb" />
+        <router-view class="router-view"></router-view>
       </el-main>
     </el-container>
   </el-container>
@@ -18,35 +19,68 @@
 import { mapGetters } from 'vuex'
 import LayoutAside from './LayoutAside.vue'
 import LayoutHeader from './LayoutHeader.vue'
-
+import BreadCrumb from '@/components/common/BreadCrumb'
 export default {
-  components: { LayoutAside, LayoutHeader },
+  components: { LayoutAside, LayoutHeader, BreadCrumb },
   computed: {
     ...mapGetters(['isCollapse']),
   },
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+  background: hsla(0, 0%, 100%, 0.6);
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  background-color: rgba(95, 95, 95, 0.4);
+  transition: all 0.2s;
+  border-radius: 0.5rem;
+
+  &:hover {
+    background-color: rgba(95, 95, 95, 0.7);
+  }
+}
 .el-header {
-  background-color: #b3c0d1;
+  background-color: rgba(18, 53, 85, 0.618);
   color: #333;
   text-align: center;
   line-height: 60px;
 }
 
 .el-aside {
-  background-color: #d3dce6;
+  background-color: rgba(18, 53, 85, 0.618);
   color: #333;
   text-align: center;
   line-height: 200px;
 }
 
 .el-main {
-  background-color: #e9eef3;
+  background-color: rgba(225, 238, 210, 0.5);
   color: #333;
-  text-align: center;
-  line-height: 160px;
   height: calc(100vh - 60px);
+  overflow: hidden !important;
+  .router-view {
+    background-color: #fff;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px rgba(95, 95, 95, 0.3);
+  }
+  .bread-crumb {
+    padding: 10px 0 10px 10px;
+    margin-top: -15px;
+  }
 }
 </style>

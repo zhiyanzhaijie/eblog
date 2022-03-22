@@ -6,6 +6,8 @@ import ElementUI from 'element-ui'
 import 'normalize.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import './permission.js'
+// import { setDomFontSize } from './setRem'
+// setDomFontSize()
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)

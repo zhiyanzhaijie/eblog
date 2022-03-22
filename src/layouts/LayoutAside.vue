@@ -38,7 +38,9 @@ export default {
   computed: {
     ...mapGetters(['isCollapse']),
     routes() {
-      return this.$router.options.routes[2].children
+      return this.$router.options.routes[2].children.filter(
+        (item) => !item.hidden
+      )
     },
   },
   methods: {},

@@ -269,11 +269,11 @@ export default {
     width: 80vw;
     background: #3b3b3b;
     position: relative;
-    border-radius: 2rem;
+    border-radius: 32px;
     .to-login {
       position: absolute;
-      top: 10rem;
-      right: 4rem;
+      top: 160px;
+      right: 65px;
       opacity: 0.9;
       transform: translate(0, -50%);
       transition: opacity 0.9s;
@@ -286,8 +286,8 @@ export default {
     }
     .to-register {
       position: absolute;
-      top: 10rem;
-      left: 4rem;
+      top: 160px;
+      left: 64px;
       opacity: 0.9;
       transform: translate(0, -50%);
       transition: opacity 0.9s;
@@ -299,10 +299,10 @@ export default {
       }
     }
     .btn {
-      width: 6rem;
-      font-size: 1.2rem;
+      width: 96px;
+      font-size: 20px;
       font-weight: bold;
-      border-radius: 1rem;
+      border-radius: 20px;
     }
     .form {
       position: absolute;
@@ -310,7 +310,7 @@ export default {
       height: 400px;
       width: 400px;
       background: #fff;
-      border-radius: 1rem;
+      border-radius: 16px;
       &.login {
         left: calc(80vw - 50px - 400px);
       }
@@ -328,7 +328,7 @@ export default {
         flex-direction: column;
         justify-content: space-evenly;
         height: 80%;
-        margin: 3.5rem 2.5rem 2.5rem 2.5rem;
+        margin: 50px 40px 40px;
         .submit {
           text-align: center;
           line-height: 80px;
@@ -339,7 +339,7 @@ export default {
           color: #beedc7;
           text-align: center;
           background: #fff;
-          border-radius: 0.8rem;
+          border-radius: 20px;
           overflow: hidden;
         }
       }

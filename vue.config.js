@@ -1,5 +1,5 @@
 const path = require('path')
-
+// const px2rem = require('postcss-plugin-px2rem')
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
@@ -18,4 +18,11 @@ module.exports = {
       },
     },
   },
+  // css: {
+  //   loaderOptions: {
+  //     portcss: {
+  //       plugins: [px2rem(px2remOptions)],
+  //     },
+  //   },
+  // },
 }
