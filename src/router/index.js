@@ -98,18 +98,26 @@ const routes = [
         path: '/user',
         name: 'User',
         meta: {
-          menu: '权限管理',
-          icon: 'el-icon-s-check',
+          menu: '用户中心',
+          icon: 'el-icon-s-custom',
         },
         component: () => import('@/views/sys/user'),
       },
       {
-        path: '/roles',
-        name: 'Roles',
+        path: '/mine',
+        name: 'Mine',
         hidden: true,
         meta: {
-          menu: '用户',
-          icon: 'el-icon-s-custom',
+          menu: '个人中心',
+        },
+        component: () => import('@/views/sys/mine'),
+      },
+      {
+        path: '/roles',
+        name: 'Roles',
+        meta: {
+          menu: '权限管理',
+          icon: 'el-icon-s-check',
         },
         component: () => import('@/views/sys/roles'),
       },

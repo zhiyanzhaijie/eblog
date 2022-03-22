@@ -3,6 +3,7 @@ const URL = {
   province: '/province',
   city: '/city',
   area: '/area',
+  uploadImg: '/upload/img',
 }
 // 省份信息接口
 export function getProvinceId() {
@@ -23,5 +24,14 @@ export function getAreaId(id) {
   return request({
     url: `${URL.area}/${id}`,
     method: 'get',
+  })
+}
+
+// 上传图片接口
+export function uploadImg(formData) {
+  return request({
+    ulr: URL.uploadImg,
+    method: 'post',
+    formData,
   })
 }

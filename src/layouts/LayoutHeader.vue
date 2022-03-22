@@ -12,7 +12,7 @@
       <div class="wrapper">
         <img
           class="avatar"
-          :src="userInfo.avatar||require('../assets/image/avatardefault.png')"
+          :src="'http://127.0.0.1:7001/public/'+userInfo.avatar||require('../assets/image/avatardefault.png')"
         />
 
         <div>{{userInfo.name}}</div>
@@ -22,7 +22,7 @@
       </div>
     </el-col>
     <el-drawer :visible.sync="drawer" size="16%" class="drawer">
-      <h3 @click="toRole">
+      <h3 @click="toMine">
         <i class="el-icon-user icon"></i>
         <span>写手中心</span>
       </h3>
@@ -74,8 +74,8 @@ export default {
     clearTime() {
       if (this.timer) clearInterval(this.timer)
     },
-    toRole() {
-      this.$router.push('/roles')
+    toMine() {
+      this.$router.push('/mine')
     },
     logOut() {
       this.$confirm('确认要离开了吗', '提示', {

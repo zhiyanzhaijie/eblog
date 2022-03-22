@@ -35,3 +35,12 @@ export function getUserInfo(id) {
     method: 'get',
   })
 }
+
+// 更新用户信息接口
+export function updateUserInfo(id, data) {
+  return request({
+    url: `${URL.userInfo}/${id}`,
+    method: 'put',
+    data,
+  })
+}
