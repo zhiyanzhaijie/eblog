@@ -15,10 +15,10 @@ const actions = {
   [USER_LOGIN]({ commit }, data) {
     return new Promise((resolve, reject) => {
       userLogin(data)
-        .then((res) => {
+        .then(async (res) => {
           // 无异常即登录成功，Token和userId持久化
-          commit(SET_TOKEN, res.data.Token)
-          commit(SET_USER_ID, res.data.id)
+          await commit(SET_TOKEN, res.data.Token)
+          await commit(SET_USER_ID, res.data.id)
           resolve(res)
         })
         .catch((e) => {

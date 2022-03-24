@@ -47,3 +47,17 @@ export function parseTime(time, cFormat) {
   })
   return time_str
 }
+// 扁平数据转树形 
+export function toTree(list, value) {
+  var arr = []
+  list.forEach((item) => {
+    if (item.pid === value) {
+      const children = toTree(list, item.id)
+      if (children.length) {
+        item.children = children
+      }
+      arr.push(item)
+    }
+  })
+  return arr
+}
