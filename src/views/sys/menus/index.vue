@@ -257,7 +257,7 @@ export default {
 
 <style lang="scss" scoped>
 .header {
-  width: 80%;
+  width: 94%;
   margin-top: 20px;
   text-align: right;
 }
@@ -266,7 +266,7 @@ export default {
   text-align: center;
 }
 .tree {
-  width: 80%;
+  width: 90%;
   margin-top: 50px;
   margin-left: 30px;
   ::v-deep .el-tree-node__content {
@@ -288,6 +288,7 @@ export default {
   .el-tree-node {
     position: relative;
     padding-left: 16px;
+    margin: 10px 0;
   }
   //节点有间隙，隐藏掉展开按钮就好了,如果觉得空隙没事可以删掉
   .el-tree-node__expand-icon.is-leaf {

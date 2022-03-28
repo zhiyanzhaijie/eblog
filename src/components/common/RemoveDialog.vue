@@ -3,13 +3,13 @@
     :visible="visible"
     width="30%"
     :before-close="handleClose"
-    :show-close="false"
+    class="wrapper"
   >
-    <span>是否删除该条数据?</span>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="handleClose">取 消</el-button>
-      <el-button type="primary" @click="handleRemove">确 定</el-button>
-    </span>
+    <div class="text">是否删除该条数据?</div>
+    <div class="dialog-footer">
+      <el-button @click="handleClose" round>取 消</el-button>
+      <el-button type="primary" round @click="handleRemove">确 定</el-button>
+    </div>
   </el-dialog>
 </template>
 
@@ -27,4 +27,13 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang='scss' scoped>
+.wrapper {
+  text-align: center;
+  .text {
+    padding: 20px 0 40px;
+  }
+  .dialog-footer {
+  }
+}
+</style>

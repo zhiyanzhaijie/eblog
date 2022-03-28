@@ -7,7 +7,6 @@ import {
   SET_USERINFO,
   USER_LOGOUT,
 } from './constants'
-
 const actions = {
   [CHANG_ISCOLLAPSE]({ commit }) {
     commit(CHANG_ISCOLLAPSE)

@@ -194,7 +194,6 @@ export default {
       },
     }
   },
-  computed: {},
   methods: {
     ...mapActions(['USER_LOGIN']),
     initForm() {

@@ -71,6 +71,20 @@
           <el-radio v-model="userInfo.status" :label="1" :disabled="disabled">启用</el-radio>
           <el-radio v-model="userInfo.status" :label="0" :disabled="disabled">禁用</el-radio>
         </el-form-item>
+        <el-form-item v-if="!disabled" label="权限角色" prop="role">
+          <el-select
+            v-model="userInfo.userinfo.roleId"
+            :disabled="operateRole<3"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in roleOption"
+              :key="item.label"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="创建时间" prop="createdAt">
           <div>{{ userInfo.createdAt | formatTime }}</div>
         </el-form-item>
@@ -126,6 +140,7 @@ import { get_user, update_user, remove_user, add_user } from '@/api/user'
 import { parseTime } from '@/utils'
 import Table from '@/components/common/Table.vue'
 import RemoveDialog from '@/components/common/RemoveDialog.vue'
+import { updateUserInfo } from '@/api/app'
 export default {
   components: {
     Table,
@@ -155,6 +170,12 @@ export default {
         label: '邀请码',
       },
     ]
+    const roleOption = [
+      { label: '管理员', value: 3 },
+      { label: '写手', value: 2 },
+      { label: '普通用户', value: 1 },
+    ]
+
     const user = {
       password: '',
       code: '00000000',
@@ -181,15 +202,17 @@ export default {
       tableData: [],
       options,
       queryOptions,
+      roleOption,
+      operateRole: 0,
       key: 'username',
       keywords: '',
-      userInfo: {},
+      userInfo: { userinfo: { roleId: 1 } },
       user,
       removeId: 0,
       searchVisible: false,
       removeVisible: false,
       createVisible: false,
-      disabled: true,
+      disabled: false,
       rules,
     }
   },
@@ -198,9 +221,12 @@ export default {
       return parseTime(new Date(val))
     },
   },
+  created() {
+    this.init()
+  },
   methods: {
-    formatter(row, column, cellValue) {
-      return parseTime(new Date(cellValue))
+    init() {
+      this.operateRole = this.$store.getters.userInfo.roleId
     },
     handleInfo(item) {
       get_user(item.id).then((res) => {
@@ -234,6 +260,9 @@ export default {
             status: this.userInfo.status,
           }
           update_user(this.userInfo.id, data).then(() => {
+            updateUserInfo(this.userInfo.id, {
+              roleId: this.userInfo?.userinfo?.roleId,
+            })
             this.handleShowDialogClose()
             this.$refs['table'].init()
             this.$message.success('用户信息已更新')

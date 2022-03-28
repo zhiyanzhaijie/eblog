@@ -1,6 +1,14 @@
 <template>
-  <el-menu :collapse="isCollapse" :collapse-transition="false" router>
-    <template v-for="route in routes">
+  <el-menu
+    :collapse="isCollapse"
+    :collapse-transition="false"
+    text-color="#ededed"
+    active-text-color="#ffd04b"
+    center
+    router
+    class="main"
+  >
+    <template v-for="route in filterroutes">
       <!-- 无子路由 -->
       <el-menu-item
         v-if="!route.children"
@@ -36,13 +44,48 @@ export default {
     return {}
   },
   computed: {
-    ...mapGetters(['isCollapse']),
-    routes() {
-      return this.$router.options.routes[2].children.filter(
-        (item) => !item.hidden
-      )
+    ...mapGetters(['isCollapse', 'routes']),
+    filterroutes() {
+      let arr = []
+      this.routes.map((route) => {
+        if (!route.hidden) {
+          if (route.children) {
+            route.children = route.children.filter((child) => !child.hidden)
+          }
+          arr.push(route)
+        }
+      })
+      return arr
     },
   },
-  methods: {},
 }
 </script>
+
+<style lang="scss" scoped>
+.main {
+  border-right-width: 0px;
+  ::v-deep .el-menu-item {
+    background-color: #5d6972;
+    :hover {
+      color: #ffd04b;
+    }
+  }
+  .is-active {
+    background-color: #41474d;
+  }
+  ::v-deep .el-submenu {
+    .el-submenu__title {
+      background-color: #5d6972;
+      :hover {
+        color: #ffd04b;
+      }
+    }
+    li {
+      background-color: #515b64;
+    }
+  }
+  ::v-deep i {
+    color: #ffd04b;
+  }
+}
+</style>

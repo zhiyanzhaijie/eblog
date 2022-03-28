@@ -37,3 +37,4 @@ export function remove_menus(id) {
     method: 'delete',
   })
 }
+

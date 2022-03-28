@@ -6,31 +6,36 @@ import 'nprogress/nprogress.css'
 const whiteForm = ['/login', '/404']
 router.beforeEach(async (to, from, next) => {
   NProgress.start()
+  // 白名单？ 放行 ：继续审核
   if (whiteForm.includes(to.path)) {
     next()
   } else {
+    // Token? 继续审核：跳至login
     const hasToken = store.getters.Token
     if (hasToken) {
-      // 判断Token是否与userInfo是否存在
       const userId = store.getters.userId
       const userInfo = store.getters.userInfo
-      if (userInfo.userId) {
+      const routes = store.getters.routes
+      // 在线？放行 ：继续审核
+      if (userInfo.userId && routes.length) {
         next()
       } else {
-        await store
-          .dispatch('SET_USERINFO', userId)
-          .then(() => {
-            next()
-          })
-          .catch(() => {
-            next('/login')
-            store.dispatch('USER_LOGOUT')
-          })
+        try {
+          await store.dispatch('SET_USERINFO', userId) // 存储用户信息
+          const asyncRoutes = await store.dispatch('SET_ROUTES') // 存储动态路由
+          await asyncRoutes.forEach((route) => {
+            router.addRoute('Main', route)
+          }) // 载入子路由
+          next({ ...to, replace: true })
+        } catch (e) {
+          console.log(e)
+          next('/login')
+          await store.dispatch('USER_LOGOUT')
+        }
       }
-      next()
     } else {
+      // 无Token，调至登录页
       next('/login')
-      await store.dispatch('USER_LOGOUT')
     }
   }
   NProgress.done()

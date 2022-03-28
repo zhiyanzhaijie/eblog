@@ -1,9 +1,334 @@
 <template>
-  <div>articles</div>
+  <div>
+    <el-row class="query-wrap" :gutter="20">
+      <el-col :span="6">
+        <el-input
+          placeholder="请输入内容"
+          v-model="keywords"
+          class="input-with-select"
+          clearable
+        ></el-input>
+      </el-col>
+      <el-col :span="4">
+        <el-select v-model="status" placeholder="请选择状态" style="display: block">
+          <el-option
+            v-for="item in statusOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-col>
+      <el-col :span="4">
+        <el-select
+          v-model="categoryId"
+          placeholder="请选择分类"
+          style="display: block"
+        >
+          <el-option
+            v-for="item in categoryOptions"
+            :key="item.value"
+            :label="item.name"
+            :value="item.id"
+          ></el-option>
+        </el-select>
+      </el-col>
+      <el-col :span="4">
+        <el-button type="danger" @click="handleSearch">搜索</el-button>
+      </el-col>
+
+      <el-col :span="4" :offset="2">
+        <el-button type="info" @click="handleSearch('all')">查看全部</el-button>
+        <el-button type="primary" @click="createArticle">新增文章</el-button>
+      </el-col>
+    </el-row>
+    <Table
+      :options="options"
+      ref="table"
+      @handleInfo="handleInfo"
+      @handleEdit="handleEdit"
+      @handleRemove="handleRemove"
+    >
+      <template v-slot:showHome="{ data }">
+        <el-tag v-if="data.showHome === 1" size="medium">展示</el-tag>
+      </template>
+      <template v-slot:publish="{ data }">
+        <el-button
+          v-if="data.status === 0"
+          size="small"
+          type="primary"
+          :loading="toAuditLoadiing"
+          @click="toAudit(data.id, 1)"
+        >请求审核</el-button>
+        <el-button
+          v-if="data.status === 1"
+          size="small"
+          type="warning"
+          :loading="toAuditLoadiing"
+          @click="toAudit(data.id, 0)"
+        >撤销审核</el-button>
+        <el-button
+          v-if="data.status === 2"
+          size="small"
+          :loading="publishLoading"
+          @click="publish(data.id, 1)"
+        >发布</el-button>
+        <el-button
+          v-if="data.status === 4"
+          size="small"
+          type="danger"
+          :loading="publishLoading"
+          @click="publish(data.id, 0)"
+        >撤销发布</el-button>
+      </template>
+    </Table>
+    <!-- 删除 -->
+    <RemoveDialog
+      :visible.sync="removeVisible"
+      @handleRemove="removeArticle"
+      @handleClose="removeVisible = false"
+      class="btns"
+    />
+    <!-- 详情 -->
+    <el-dialog
+      :visible.sync="visible"
+      width="80%"
+      :before-close="
+        () => {
+          visible = false;
+        }
+      "
+    >
+      <!-- 这里用form组件的布局 -->
+      <el-form label-width="8vw">
+        <el-form-item label="标题">
+          <span>{{ article.title }}</span>
+        </el-form-item>
+        <el-form-item label="作者">
+          <span>{{ article.user }}</span>
+        </el-form-item>
+        <el-form-item label="分类">
+          <span>{{ article.category }}</span>
+        </el-form-item>
+        <el-form-item label="封面">
+          <img class="img" :src="article.cover" alt srcset />
+        </el-form-item>
+        <el-form-item label="内容">
+          <!-- 无法通过配置关闭编辑页 通过样式修改 -->
+          <mavon-editor
+            class="editor"
+            :toolbarsFlag="false"
+            :editable="false"
+            v-model="article.content"
+          />
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
-export default {}
-</script>
+import Table from '@/components/common/Table'
+import RemoveDialog from '@/components/common/RemoveDialog'
+import { category_list } from '@/api/category'
+import {
+  article_delete,
+  article_show,
+  article_publish,
+  article_to_audit,
+} from '@/api/article'
+export default {
+  components: { Table, RemoveDialog },
+  data() {
+    const options = {
+      columns: [
+        { prop: 'actions', label: '操作', scope: 'action' },
+        { prop: 'publish', label: '发布/审核', scope: 'publish' },
+        { prop: 'id', label: 'ID' },
+        { prop: 'title', label: '标题' },
+        { prop: 'status', label: '状态', scope: 'article-status' },
+        { prop: 'showHome', label: '首页展示', scope: 'showHome' },
+        { prop: 'createdAt', label: '创建时间', formatter: 'time' },
+        { prop: 'updatedAt', label: '更新时间', formatter: 'time' },
+      ],
+      api: 'article_list',
+      btns: ['show', 'delete', 'edit'],
+    }
+    return {
+      options,
+      removeVisible: false,
+      targetId: 0,
+      keywords: '',
+      status: '',
+      categoryId: '',
+      statusOptions: [
+        {
+          label: '草稿',
+          value: 0,
+        },
+        {
+          label: '审核中',
+          value: 1,
+        },
+        {
+          label: '审核通过',
+          value: 2,
+        },
+        {
+          label: '审核拒绝',
+          value: 3,
+        },
+        {
+          label: '已发布',
+          value: 4,
+        },
+      ],
+      categoryOptions: [],
+      visible: false,
+      article: {
+        title: '',
+        user: '',
+        category: '',
+        content: '',
+        cover: '',
+      },
+      toAuditLoadiing: false,
+      publishLoading: false,
+    }
+  },
+  mounted() {
+    this.init()
+  },
+  methods: {
+    handleInfo(item) {
+      article_show(item.id).then((res) => {
+        const data = res.data
+        this.article.title = data.title
+        this.article.category = data?.category?.name
+        this.article.user = data?.user?.userinfo?.name
+        this.article.content = data.content
+        this.article.cover = process.env.VUE_APP_BASEURL + data.cover
+        this.visible = true
+      })
+    },
+    handleEdit(item) {
+      this.$router.push(`/articles/edit/${item.id}`)
+    },
+    handleRemove(item) {
+      this.removeVisible = true
+      this.targetId = item.id
+    },
+    createArticle() {
+      this.$router.push('/articles/add')
+    },
+    removeArticle() {
+      // ... 接口
+      article_delete(this.targetId).then(() => {
+        this.removeVisible = false
+        this.targetId = ''
+        this.$refs['table'].init()
+        this.$message.success('删除成功')
+      })
+    },
+    init() {
+      this.getCategory()
+    },
+    getCategory() {
+      // 这个接口做了分页
+      // 参数先传 pageSize：999
+      category_list({
+        pageNum: 1,
+        pageSize: 999,
+      }).then((res) => {
+        this.categoryOptions = res.data.rows
+      })
+    },
+    handleSearch(type) {
+      if (type === 'all') {
+        this.$refs['table'].init()
+      } else {
+        //  处理参数
+        const queryObj = {}
+        if (this.keywords) {
+          queryObj.keywords = this.keywords
+        }
 
-<style></style>
+        if (this.categoryId) {
+          queryObj.queryCategoryId = this.categoryId
+        }
+
+        // 这里有个bug
+        //  status为0时 不走判断
+        // 这里改为不全等  不等的话会发生隐式转换
+        if (this.status !== '') {
+          queryObj.queryStatus = this.status
+        }
+        this.$refs['table'].init(queryObj)
+      }
+    },
+    publish(id, type) {
+      this.publishLoading = true
+      const body = {
+        status: true,
+      }
+      if (!type) {
+        body.status = false
+      }
+      article_publish(id, body)
+        .then(() => {
+          this.$refs['table'].init()
+          this.$message({
+            message: '成功',
+            type: 'success',
+          })
+        })
+        .finally(() => {
+          this.publishLoading = false
+        })
+    },
+    toAudit(id, type) {
+      this.toAuditLoadiing = true
+      const body = {
+        status: true,
+      }
+      if (!type) {
+        body.status = false
+      }
+      article_to_audit(id, body)
+        .then(() => {
+          this.$refs['table'].init()
+          this.$message({
+            message: '成功',
+            type: 'success',
+          })
+        })
+        .finally(() => {
+          this.toAuditLoadiing = false
+        })
+    },
+  },
+}
+</script>
+<style lang="scss" scoped>
+.btns {
+  text-align: center;
+}
+.query-wrap {
+  margin-top: 20px;
+}
+
+.img {
+  height: 200px;
+  width: 200px;
+}
+
+::v-deep .editor {
+  .v-note-edit {
+    display: none;
+  }
+  .v-note-panel .v-note-show {
+    flex: 1;
+    -webkit-box-flex: 1;
+  }
+}
+</style>

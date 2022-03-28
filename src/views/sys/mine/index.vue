@@ -155,6 +155,11 @@ export default {
       this.ruleForm.areaId = this.userInfo.areaId
       this.ruleForm.avatar = this.userInfo.avatar
       this.headers.authorization = this.Token
+      this.region = [
+        this.userInfo.provinceId,
+        this.userInfo.cityId,
+        this.userInfo.areaId,
+      ]
     },
 
     handleAvatarSuccess(res, file) {

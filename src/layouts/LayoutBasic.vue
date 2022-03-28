@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-aside :width="isCollapse ? '64px' : '200px'">
+    <el-aside :width="isCollapse? '64px':'200px'">
       <layout-aside />
     </el-aside>
     <el-container>
@@ -50,26 +50,23 @@ export default {
   }
 }
 .el-header {
-  background-color: rgba(18, 53, 85, 0.618);
-  color: #333;
+  background-color: #5d6972;
+  color: #dee2e4;
   text-align: center;
   line-height: 60px;
 }
 
 .el-aside {
-  background-color: rgba(18, 53, 85, 0.618);
-  color: #333;
-  text-align: center;
-  line-height: 200px;
+  background-color: #5d6972;
+  color: #dee2e4;
 }
 
 .el-main {
-  background-color: rgba(225, 238, 210, 0.5);
-  color: #333;
+  background-color: #ededed;
   height: calc(100vh - 60px);
   overflow: hidden !important;
   .router-view {
-    background-color: #fff;
+    background-color: #fbfaf9;
     height: 100%;
     padding: 20px;
     box-sizing: border-box;

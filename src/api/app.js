@@ -44,3 +44,11 @@ export function updateUserInfo(id, data) {
     data,
   })
 }
+// 获取index用户信息
+export function userInfo_list(query) {
+  return request({
+    url: `${URL.userInfo}`,
+    method: 'get',
+    params: query,
+  })
+}

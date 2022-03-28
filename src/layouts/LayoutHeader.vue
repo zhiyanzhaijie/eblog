@@ -61,7 +61,7 @@ export default {
     this.clearTime()
   },
   methods: {
-    ...mapActions(['CHANG_ISCOLLAPSE']),
+    ...mapActions(['CHANG_ISCOLLAPSE', 'USER_LOGOUT', 'REMOVE_ROUTES']),
 
     // 定时显示头部时间
     updateTime() {
@@ -87,6 +87,8 @@ export default {
         this.$router.push('/login')
         removeUserid()
         removeToken()
+        this.USER_LOGOUT()
+        this.REMOVE_ROUTES()
         this.$message({
           type: 'success',
           message: '你已退出登录',
@@ -114,6 +116,7 @@ export default {
 .drawer {
   h3 {
     margin: 0;
+    color: #3b3b3b;
     &:hover {
       cursor: pointer;
       background: #fde6e0;
